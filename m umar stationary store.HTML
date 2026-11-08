@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>M Umar Stationery Store</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+}
+
+header {
+  background: #075e45;
+  color: white;
+  text-align: center;
+  padding: 25px 10px;
+}
+
+header h1 { margin: 0; }
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 15px;
+}
+
+.search {
+  width: 100%;
+  padding: 15px;
+  margin: 15px 0;
+  border: 2px solid #087b52;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.product {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px #ddd;
+}
+
+.product img {
+  width: 100%;
+  height: 145px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.product h3 { color: #075e45; }
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+button {
+  background: #087b52;
+  color: white;
+  border: none;
+  padding: 11px 15px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.cart, .order {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+}
+
+.total {
+  font-size: 22px;
+  color: #075e45;
+  font-weight: bold;
+}
+
+footer {
+  background: #075e45;
+  color: white;
+  text-align: center;
+  padding: 22px;
+  margin-top: 30px;
+}
+
+@media(max-width:350px) {
+  .products { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>M UMAR STATIONERY STORE</h1>
+<p>📚 Online Stationery Shopping</p>
+<p>Order Your School Items Online!</p>
+</header>
+
+<div class="container">
+
+<h2>🔍 Search Products</h2>
+
+<input
+class="search"
+type="text"
+id="search"
+placeholder="Search Pen, Pencil, Copy, Register..."
+oninput="searchProducts()"
+>
+
+<h2>🛍️ Our Products</h2>
+
+<div class="products" id="products">
+
+<div class="product" data-name="pen">
+<img src="https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500" alt="Pen">
+<h3>Pen 🖊️</h3>
+<p class="price">Rs. 50</p>
+<button onclick="addCart('Pen',50)">Add to Cart</button>
+</div>
+
+<div class="product" data-name="pencil">
+<img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" alt="Pencil">
+<h3>Pencil ✏️</h3>
+<p class="price">Rs. 20</p>
+<button onclick="addCart('Pencil',20)">Add to Cart</button>
+</div>
+
+<div class="product" data-name="copy notebook">
+<img src="https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=500" alt="Copy">
+<h3>Copy 📒</h3>
+<p class="price">Rs. 50</p>
+<button onclick="addCart('Copy',50)">Add to Cart</button>
+</div>
+
+<div class="product" data-name="register">
+<img src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=500" alt="Register">
+<h3>Register 📚</h3>
+<p class="price">Rs. 200</p>
+<button onclick="addCart('Register',200)">Add to Cart</button>
+</div>
+
+</div>
+
+<p id="noResults" style="display:none;">
+No Products Found!
+</p>
+
+<div class="cart">
+
+<h2>🛒 Shopping Cart</h2>
+
+<div id="cartItems">No Items Added</div>
+
+<p class="total" id="total">Total: Rs. 0</p>
+
+</div>
+
+<div class="order">
+
+<h2>📝 Customer Details</h2>
+
+<input id="name" placeholder="Enter Your Full Name">
+
+<input id="phone" type="tel" placeholder="Enter Your Phone Number">
+
+<textarea id="address" placeholder="Enter Complete Address"></textarea>
+
+<button onclick="placeOrder()">
+Submit Order on WhatsApp
+</button>
+
+</div>
+
+</div>
+
+<footer>
+
+<h3>M Umar Stationery Store</h3>
+
+<p>Website Created By: M Umar Memon</p>
+
+<p>WhatsApp: 0332 8091094</p>
+
+<p>© 2026 All Rights Reserved</p>
+
+</footer>
+
+<script>
+
+let cart = [];
+
+function searchProducts() {
+
+let search = document.getElementById("search")
+.value.toLowerCase().trim();
+
+let products = document.querySelectorAll(".product");
+
+let found = 0;
+
+products.forEach(product => {
+
+let name = product.dataset.name;
+
+if(name.includes(search)) {
+product.style.display = "block";
+found++;
+} else {
+product.style.display = "none";
+}
+
+});
+
+document.getElementById("noResults").style.display =
+found === 0 ? "block" : "none";
+
+}
+
+function addCart(name, price) {
+
+let item = cart.find(x => x.name === name);
+
+if(item) {
+item.qty++;
+} else {
+cart.push({name, price, qty:1});
+}
+
+showCart();
+
+}
+
+function showCart() {
+
+let html = "";
+let total = 0;
+
+cart.forEach((item,index) => {
+
+let subtotal = item.price * item.qty;
+
+total += subtotal;
+
+html += `
+<p>
+<b>${item.name}</b>
+<br>
+Rs. ${item.price} × ${item.qty}
+<br>
+<button onclick="changeQty(${index},-1)">-</button>
+${item.qty}
+<button onclick="changeQty(${index},1)">+</button>
+= Rs. ${subtotal}
+</p>
+<hr>
+`;
+
+});
+
+document.getElementById("cartItems").innerHTML =
+html || "No Items Added";
+
+document.getElementById("total").innerText =
+"Total: Rs. " + total;
+
+}
+
+function changeQty(index,amount) {
+
+cart[index].qty += amount;
+
+if(cart[index].qty <= 0) {
+cart.splice(index,1);
+}
+
+showCart();
+
+}
+
+function placeOrder() {
+
+let name = document.getElementById("name").value.trim();
+let phone = document.getElementById("phone").value.trim();
+let address = document.getElementById("address").value.trim();
+
+if(!name || !phone || !address || cart.length === 0) {
+
+alert("Please fill all details and add products!");
+return;
+
+}
+
+let message = "NEW ORDER - M UMAR STATIONERY STORE\n\n";
+
+message += "Customer: " + name + "\n";
+message += "Phone: " + phone + "\n";
+message += "Address: " + address + "\n\n";
+
+message += "ORDER DETAILS:\n";
+
+let total = 0;
+
+cart.forEach(item => {
+
+let subtotal = item.price * item.qty;
+
+message += item.name + " x " + item.qty +
+" = Rs. " + subtotal + "\n";
+
+total += subtotal;
+
+});
+
+message += "\nTOTAL BILL: Rs. " + total;
+
+let ownerNumber = "923328091094";
+
+let url = "https://wa.me/" + ownerNumber +
+"?text=" + encodeURIComponent(message);
+
+window.open(url,"_blank");
+
+}
+
+</script>
+
+</body>
+</html>
